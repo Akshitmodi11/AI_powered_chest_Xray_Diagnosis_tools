@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Powered for Chest X-ray Diagnosis Tools</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <h1>AI Powered for Chest X-ray Diagnosis Tools</h1>
+    <div class="upload-container" id="uploadContainer">
+        <p>Drag & drop your image here</p>
+        <form id="imageForm" action="/upload" method="post" enctype="multipart/form-data" onsubmit="return false;">
+            <input type="file" id="fileInput" name="image" accept="image/*" required>
+        </form>
+    </div>
+    <p> OR </p>
+    <button class="upload-button" onclick="document.getElementById('fileInput').click()">Select Image</button>
+
+    <!-- Image preview section -->
+    <div id="imagePreview" style="margin-top: 20px;">
+        <img id="uploadedImage" src="" alt="Uploaded Image Preview" style="display: none; width: 200px; height: auto; border: 2px solid #ddd; border-radius: 10px; margin-top: 20px;">
+    </div>
+    
+    <button class="generate-button" id="generateButton" style="display: none;" onclick="submitForm()">Generate Report</button>     
+
+    <script>
+        const uploadContainer = document.getElementById('uploadContainer');
+        const fileInput = document.getElementById('fileInput');
+        const generateButton = document.getElementById('generateButton');
+        const uploadedImage = document.getElementById('uploadedImage');
+        const imageForm = document.getElementById('imageForm');
+
+        uploadContainer.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            uploadContainer.classList.add('dragover');
+        });
+
+        uploadContainer.addEventListener('dragleave', () => {
+            uploadContainer.classList.remove('dragover');
+        });
+
+        uploadContainer.addEventListener('drop', (event) => {
+            event.preventDefault();
+            uploadContainer.classList.remove('dragover');
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length > 0) {
+                handleFileUpload(fileInput.files[0]);
+            }
+        });
+
+        function handleFileUpload(file) {
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    uploadedImage.src = e.target.result;
+                    uploadedImage.style.display = 'block'; // Show the image preview
+                    generateButton.style.display = 'block'; // Show the "Generate Report" button
+                };
+                reader.readAsDataURL(file);
+
+                alert(`File "${file.name}" uploaded successfully!`);
+            } else {
+                alert('Please upload a valid image file.');
+            }
+        }
+
+        function submitForm() {
+            // Submit the form after preview is shown
+            imageForm.submit();
+        }
+    </script>
+</body>
+</html>
